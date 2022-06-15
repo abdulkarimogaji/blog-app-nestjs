@@ -1,18 +1,31 @@
-import { Body, Controller, Get, Param, Put } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
-import { UserService } from './users.service';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ValidationPipe } from "src/validation.pipes";
 
-@Controller('users')
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UserService } from "./users.service";
+
+@Controller("users")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private userService: UserService
+  ) {}
 
-  @Get(":id")
-  getUser(@Param("id") id: string): string {
-    return this.userService.getUser(id);
+  @Get("me")
+  @UseGuards(AuthGuard("jwt"))
+  getUserById(@Req() req) {
+    return this.userService.getUserById(req.userId);
   }
 
-  @Put()
-  updateUser(@Body() user: User) {
-    return this.userService.updateUser(user)
+  @Post()
+  createUser(@Body() user: CreateUserDto) {
+    return this.userService.createUser(user);
   }
 }
