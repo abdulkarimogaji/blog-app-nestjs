@@ -4,7 +4,7 @@ import { Document, Schema as mongooseSchema } from 'mongoose';
 export type UserDocument = User & Document
 
 
-@Schema()
+@Schema({timestamps: true})
 export class User {
 
   @Prop({ type: mongooseSchema.Types.ObjectId})

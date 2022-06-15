@@ -20,8 +20,8 @@ export class UserController {
 
   @Get("me")
   @UseGuards(AuthGuard("jwt"))
-  getUserById(@Req() req) {
-    return this.userService.getUserById(req.userId);
+  async getUserById(@Req() req) {
+    return this.userService.getUserById(req.user.userId);
   }
 
   @Post()
