@@ -5,12 +5,14 @@ import { UserModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { BlogsModule } from './blogs/blogs.module';
 @Module({
   imports: [
     UserModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvVars: false }),
     MongooseModule.forRoot(new ConfigService().get("DB_CONNECTION_URI")),
+    BlogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
