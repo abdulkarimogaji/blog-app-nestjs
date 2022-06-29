@@ -34,6 +34,9 @@ export class User {
 
   @Prop({type: [String], default: ['user']})
   roles: string[];
+
+  @Prop()
+  displayPic: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
