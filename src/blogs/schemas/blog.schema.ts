@@ -1,6 +1,7 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
 import { Document, Schema as mongooseSchema } from 'mongoose';
-import { type } from 'os';
+
+
 
 export type BlogDocument = Blog & Document
 
@@ -28,8 +29,8 @@ export class Blog {
   id: string;
 
 
-  @Prop({ required: true, type: mongooseSchema.Types.ObjectId  })
-  author: string
+  @Prop({ required: true, type: mongooseSchema.Types.ObjectId, ref: "User"  })
+  author: any
 
   @Prop({ required: true })
   title: string;

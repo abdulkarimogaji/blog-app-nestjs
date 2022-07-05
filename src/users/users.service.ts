@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Logger } from "@nestjs/common";
+import { HttpException, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
@@ -17,8 +17,14 @@ export class UserService {
   ) {}
 
   async getUserById(id: string) {
-    const user = await this.userModel.findById(id);
-    return { message: "User fetched successfully", user };
+    try {
+      const user = await this.userModel.findById(id, {password: 0});
+      if (!user) throw new NotFoundException()
+      return { message: "User fetched successfully", user };
+    }catch(error) {
+      if (error instanceof NotFoundException) throw error
+      throw new HttpException(error, 500)
+    }
   }
 
   async createUser(user: CreateUserDto) {
@@ -34,10 +40,10 @@ export class UserService {
       newUser.password = undefined
       const access_token = this.jwtService.sign(payload, {
         secret: this.configService.get("JWT_SECRET"),
-        expiresIn: '5m'
+        expiresIn: '20m'
       });
       // generate response
-      return { message: "User created successfully", user: newUser, access_token };
+      return { message: "User created successfully", data: newUser, access_token };
     } catch(error) {
       this.logger.error(error)
       if (error.name == "MongoServerError") {
