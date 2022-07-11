@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { FetchQueryDto } from './dto/fetch-query-dto';
 
 
 @Controller('blogs')
@@ -9,8 +10,8 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 export class BlogsController {
     constructor(private blogService: BlogsService){}
     @Get()
-    async getBlogs() {
-        return this.blogService.getBlogs()
+    async getBlogs(@Query() query: FetchQueryDto) {
+        return this.blogService.getBlogs(query)
     }
 
     @Post()
