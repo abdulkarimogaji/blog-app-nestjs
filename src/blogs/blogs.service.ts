@@ -1,12 +1,14 @@
 import { HttpException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Error, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateBlogDto } from './dto/create-blog.dto';
+import { FetchQueryDto } from './dto/fetch-query-dto';
 import { Blog, BlogDocument } from './schemas/blog.schema';
 
 
 
-const lookupAuthorAndComments = [{
+const lookupAuthorAndComments = [
+  {
   $lookup: {
    from: 'comments',
    'let': {
@@ -78,9 +80,14 @@ export class BlogsService {
   }
 
 
-  async getBlogs() {
+  async getBlogs(query: FetchQueryDto) {
+    const matchStage = query.tag ? {$match: {tags: {$elemMatch: {$eq: query.tag}}}} : {$match: {}}
+    const limitStage = { $limit: query.limit || 1000} 
+    const sort: Record<string, | 1 | -1 | any> = { createdAt: -1 };
+    const sortStage = { $sort: sort}
+    const skipStage = {$skip: ((query.page -1 )* query.limit) || 0}
     try {
-      const blogs = await this.blogModel.aggregate([...lookupAuthorAndComments])
+      const blogs = await this.blogModel.aggregate([matchStage, sortStage, skipStage, limitStage, ...lookupAuthorAndComments])
 
       return { message: "blogs fetched successfully", data: blogs }
     } catch (error) {
