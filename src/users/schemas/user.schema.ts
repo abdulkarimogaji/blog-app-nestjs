@@ -30,7 +30,7 @@ export class User {
   phone: string;
 
   @Prop({ required: true})
-  displayName: string;
+  username: string;
 
   @Prop({type: [String], default: ['user']})
   roles: string[];
