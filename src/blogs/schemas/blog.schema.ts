@@ -44,6 +44,9 @@ export class Blog {
   @Prop({ type: [BlogSectonSchema], default: [] })
   sections: BlogSection;
 
+  @Prop({ type: BlogSectonSchema })
+  intro: BlogSection
+  
   @Prop({ default: 0})
   like_count: number
 
