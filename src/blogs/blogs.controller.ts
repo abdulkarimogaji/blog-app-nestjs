@@ -6,7 +6,6 @@ import { FetchQueryDto } from './dto/fetch-query-dto';
 
 
 @Controller('blogs')
-@UseGuards(AuthGuard("jwt"))
 export class BlogsController {
     constructor(private blogService: BlogsService){}
     @Get()
@@ -15,12 +14,14 @@ export class BlogsController {
     }
 
     @Post()
+    @UseGuards(AuthGuard("jwt"))
     async createBlog(@Body() body: CreateBlogDto, @Req() req) {
         return this.blogService.createBlog(body, req.user.userId as string)
     }
 
 
     @Get("me")
+    @UseGuards(AuthGuard("jwt"))
     async getMyBlogs(@Req() req: any) {
         return this.blogService.getUserBlogs(req.user.userId as string)
     }
