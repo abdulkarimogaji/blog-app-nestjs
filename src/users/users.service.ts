@@ -20,7 +20,7 @@ export class UserService {
     try {
       const user = await this.userModel.findById(id, {password: 0});
       if (!user) throw new NotFoundException()
-      return { message: "User fetched successfully", user };
+      return { message: "User fetched successfully", data: user };
     }catch(error) {
       if (error instanceof NotFoundException) throw error
       throw new HttpException(error, 500)
@@ -36,14 +36,14 @@ export class UserService {
       const newUser = await this.userModel.create(user);
       // create access_token
       const payload = { sub: newUser._id, roles: newUser.roles };
-      // remove password from response
-      newUser.password = undefined
       const access_token = this.jwtService.sign(payload, {
         secret: this.configService.get("JWT_SECRET"),
-        expiresIn: '20m'
+        expiresIn: '2d'
       });
+      // remove password from response
+      newUser.password = undefined
       // generate response
-      return { message: "User created successfully", data: newUser, access_token };
+      return { message: "User created successfully", data: { user: newUser, access_token},  };
     } catch(error) {
       this.logger.error(error)
       if (error.name == "MongoServerError") {

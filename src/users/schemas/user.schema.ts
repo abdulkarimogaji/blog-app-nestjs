@@ -4,12 +4,14 @@ import { Document, Schema as mongooseSchema } from 'mongoose';
 export type UserDocument = User & Document
 
 
-@Schema({timestamps: true})
+@Schema({ timestamps: true })
 export class User {
 
-  @Prop({ type: mongooseSchema.Types.ObjectId})
+  @Prop({ type: mongooseSchema.Types.ObjectId })
   id: string;
 
+  @Prop()
+  about: string;
 
   @Prop()
   firstName: string;
@@ -17,10 +19,10 @@ export class User {
   @Prop()
   lastName: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, unique: true})
+  @Prop({ required: true, unique: true })
   email: string;
 
   @Prop()
@@ -29,14 +31,14 @@ export class User {
   @Prop()
   phone: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   username: string;
 
-  @Prop({type: [String], default: ['user']})
+  @Prop({ type: [String], default: ['user'] })
   roles: string[];
 
   @Prop()
-  displayPic: string;
+  picture: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
