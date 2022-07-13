@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -19,8 +20,13 @@ export class UserController {
 
   @Get("me")
   @UseGuards(AuthGuard("jwt"))
-  async getUserById(@Req() req) {
+  async getUserByJwt(@Req() req) {
     return this.userService.getUserById(req.user.userId);
+  }
+
+  @Get(":id")
+  async getUserById(@Param("id") id: string) {
+    return this.userService.getUserById(id)
   }
 
   @Post()
