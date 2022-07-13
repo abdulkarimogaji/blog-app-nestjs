@@ -35,9 +35,7 @@ export class AuthService {
     const payload = { roles: user.roles, sub: user._id };
     // remove password from response
     user.password = undefined
-    return {
-      access_token: this.jwtService.sign(payload, { secret: this.configService.get('JWT_SECRET')}),
-      user,
-    };
+    const access_token = this.jwtService.sign(payload, { secret: this.configService.get('JWT_SECRET')})
+    return { message : "Login successful" , data: { user, access_token}};
   }
 }
