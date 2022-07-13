@@ -1,5 +1,5 @@
 
-import { IsString, IsEnum, IsEmail, IsPhoneNumber, IsOptional, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsString, IsEnum, IsEmail, IsPhoneNumber, IsOptional, IsNotEmpty, IsUrl, IsNumber } from 'class-validator';
 
 
 export class CreateUserDto {
@@ -11,14 +11,14 @@ export class CreateUserDto {
   @IsOptional()
   lastName: string;
 
+  @IsString()
+  @IsOptional()
+  about: string;
+
   @IsNotEmpty()
   @IsString()
   username: string
 
-  @IsOptional()
-  @IsString()
-  @IsEnum({})
-  type: string
 
   @IsString()
   @IsEmail()
@@ -34,6 +34,6 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsUrl()
-  displayPic: string
+  picture: string
   
 }
