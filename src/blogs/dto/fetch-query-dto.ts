@@ -14,4 +14,7 @@ export class FetchQueryDto {
 
   @IsOptional()
   tag: string;
+
+  @IsOptional()
+  searchKey: string;
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { BlogsService } from './blogs.service';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -11,6 +11,11 @@ export class BlogsController {
     @Get()
     async getBlogs(@Query() query: FetchQueryDto) {
         return this.blogService.getBlogs(query)
+    }
+
+    @Get("/search")
+    async searchBlogs(@Query() query: FetchQueryDto) {
+        return this.blogService.searchBlogs(query)
     }
 
     @Post()

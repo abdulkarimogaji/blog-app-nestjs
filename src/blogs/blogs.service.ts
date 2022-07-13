@@ -11,7 +11,7 @@ const lookupAuthorAndComments = [
   {
   $lookup: {
    from: 'comments',
-   'let': {
+   let: {
     blogId: '$_id'
    },
    pipeline: [
@@ -59,7 +59,11 @@ const lookupAuthorAndComments = [
    'comments.author.password': 0,
    'comments.author.roles': 0,
    'comments.author.createdAt': 0,
-   'comments.author.updatedAt': 0
+   'comments.author.updatedAt': 0,
+   'comments.author.firstName': 0,
+   'comments.author.lastName': 0,
+   'comments.author.email': 0,
+   'comments.author.phone': 0,
   }
  }]
 @Injectable()
@@ -83,7 +87,7 @@ export class BlogsService {
   async getBlogs(query: FetchQueryDto) {
     const matchStage = query.tag ? {$match: {tags: {$elemMatch: {$eq: query.tag}}}} : {$match: {}}
     const limitStage = { $limit: query.limit || 1000} 
-    const sort: Record<string, | 1 | -1 | any> = { createdAt: -1 };
+    const sort: Record<string, | 1 | -1 | any> = { like_count: -1, view_count: -1, createdAt: -1};
     const sortStage = { $sort: sort}
     const skipStage = {$skip: ((query.page -1 )* query.limit) || 0}
     try {
@@ -151,6 +155,32 @@ export class BlogsService {
       return { message: "blog liked successfully" }
     } catch (error) {
       if (error instanceof NotFoundException) throw error
+      this.logger.error(error)
+      throw new HttpException(error, 500)
+    }
+  }
+
+  async searchBlogs(query: FetchQueryDto) {
+    var matchStage = {$match: {}}
+    var sort: Record<string, | 1 | -1 | any> = { like_count: -1, view_count: -1, createdAt: -1 };
+    if (query.searchKey && query.tag) {
+      matchStage = {$match: { tags: {$elemMatch: {$eq: query.tag}}, $text: {$search: `"${query.searchKey}"`}}}
+      sort = { score: { $meta: "textScore" }, like_count: -1, view_count: -1, createdAt: -1 };
+    }else if (query.searchKey) {
+      sort = { score: { $meta: "textScore" }, like_count: -1, view_count: -1, createdAt: -1 };
+      matchStage = {$match: { $text: {$search: `"${query.searchKey}"`}}}
+    }else if (query.tag) {
+      matchStage = {$match: { tags: {$elemMatch: {$eq: query.tag}}}}
+    }
+    
+    const limitStage = { $limit: query.limit || 1000} 
+    const sortStage = { $sort: sort}
+    const skipStage = {$skip: ((query.page -1 )* query.limit) || 0}
+    try {
+      const blogs = await this.blogModel.aggregate([matchStage, sortStage, skipStage, limitStage, ...lookupAuthorAndComments])
+
+      return { message: "blogs fetched successfully", data: blogs }
+    } catch (error) {
       this.logger.error(error)
       throw new HttpException(error, 500)
     }
