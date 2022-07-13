@@ -1,6 +1,6 @@
 import { HttpException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { resolveSoa } from 'dns';
+
 import { Model } from 'mongoose';
 import { Blog, BlogDocument } from 'src/blogs/schemas/blog.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
