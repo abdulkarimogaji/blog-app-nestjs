@@ -19,7 +19,7 @@ class BlogSection extends Document {
 
 }
 
-const BlogSectonSchema = SchemaFactory.createForClass(BlogSection)
+const BlogSectonSchema = SchemaFactory.createForClass(BlogSection).index({ title: "text", "intro.title": "text", "sections.title": "text"})
 
 
 @Schema({ timestamps: true })
