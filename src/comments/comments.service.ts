@@ -45,4 +45,21 @@ export class CommentsService {
       return new HttpException("Error", 500)
     }
   }
+
+  async likeComment(id: string) {
+    try {
+      const r = await this.commentModel.updateOne({ _id: id }, { $inc: { like_count: 1 } })
+      if (r.matchedCount === 0) {
+        throw new NotFoundException()
+      }
+      if (r.modifiedCount === 0) {
+        throw new HttpException("like failed", 500)
+      }
+      return { message: "comment liked successfully" }
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error
+      this.logger.error(error)
+      throw new HttpException(error, 500)
+    }
+  }
 }
