@@ -17,10 +17,58 @@ export class UserService {
   ) {}
 
   async getUserById(id: string) {
+const commentSort: Record<string, | 1 | -1 | any> = { createdAt: -1 };
+
     try {
-      const user = await this.userModel.findById(id, {password: 0});
-      if (!user) throw new NotFoundException()
-      return { message: "User fetched successfully", data: user };
+      const users = await this.userModel.aggregate([
+        { $match: { $expr: { $eq: ["$_id", { $toObjectId: id }] } } },
+        {
+          $lookup: {
+            from: "blogs",
+            localField: "_id",
+            foreignField: "author",
+            as: "blogCount",
+          }
+        },
+        {
+          $addFields: {
+            blogCount: { $size: "$blogCount" }
+          }
+        },
+        {
+          $lookup: {
+           from: 'comments',
+           let: {
+            authorId: '$_id'
+           },
+           pipeline: [
+            {
+             $match: {
+              $expr: {
+               $eq: [
+                '$author',
+                '$$authorId'
+               ]
+              }
+             }
+            },
+            {
+              $sort: commentSort
+            },
+            {
+              $limit: 5
+            }
+           ],
+           as: 'comments'
+          }
+         }, {
+          $project: {
+           'password': 0
+          }
+         }
+      ]);
+      if (!users[0]) throw new NotFoundException()
+      return { message: "User fetched successfully", data: users[0] };
     }catch(error) {
       if (error instanceof NotFoundException) throw error
       throw new HttpException(error, 500)

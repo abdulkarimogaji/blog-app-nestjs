@@ -6,7 +6,7 @@ import { FetchQueryDto } from './dto/fetch-query-dto';
 import { Blog, BlogDocument } from './schemas/blog.schema';
 
 
-
+const commentSort: Record<string, | 1 | -1 | any> = { createdAt: -1 };
 const lookupAuthorAndComments = [
   {
   $lookup: {
@@ -37,6 +37,9 @@ const lookupAuthorAndComments = [
      $unwind: {
       path: '$author'
      }
+    },
+    {
+      $sort: commentSort
     }
    ],
    as: 'comments'
