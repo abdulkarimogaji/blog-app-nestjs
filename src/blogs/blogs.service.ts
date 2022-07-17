@@ -88,7 +88,7 @@ export class BlogsService {
 
 
   async getBlogs(query: FetchQueryDto) {
-    const matchStage = query.tag ? {$match: {tags: {$elemMatch: {$eq: query.tag}}}} : {$match: {}}
+    const matchStage = query.tag ? {$match: {tags: query.tag}} : {$match: {}}
     const limitStage = { $limit: query.limit || 1000} 
     const sort: Record<string, | 1 | -1 | any> = { like_count: -1, view_count: -1, createdAt: -1};
     const sortStage = { $sort: sort}

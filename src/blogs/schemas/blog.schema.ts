@@ -19,7 +19,7 @@ class BlogSection extends Document {
 
 }
 
-const BlogSectonSchema = SchemaFactory.createForClass(BlogSection).index({ title: "text", "intro.title": "text", "sections.title": "text"})
+const BlogSectionSchema = SchemaFactory.createForClass(BlogSection)
 
 
 @Schema({ timestamps: true })
@@ -41,10 +41,10 @@ export class Blog {
   @Prop({ type: [String] })
   tags: string[]
 
-  @Prop({ type: [BlogSectonSchema], default: [] })
+  @Prop({ type: [BlogSectionSchema], default: [] })
   sections: BlogSection;
 
-  @Prop({ type: BlogSectonSchema })
+  @Prop({ type: BlogSectionSchema })
   intro: BlogSection
   
   @Prop({ default: 0})
@@ -55,4 +55,4 @@ export class Blog {
 
 }
 
-export const BlogSchema = SchemaFactory.createForClass(Blog)
+export const BlogSchema = SchemaFactory.createForClass(Blog).index({ title: "text", "intro.title": "text", "sections.title": "text", "tags": "text"})
