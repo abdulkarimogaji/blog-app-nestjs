@@ -1,73 +1,154 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Introduction
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Blognado API was built from the ground-up with a REST API that makes it easy for developers and and users to have access to blog data stored in a MongoDB database
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+These docs describe how to use the [BLOGNADO](https://blognado.vercel.app) API. We hope you enjoy these docs, and please don't hesitate to [file an issue](https://github.com/AbdulkarimOgaji/blog-app-nestjs/issues/new) if you see anything missing.
 
-## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Use Cases
 
-## Installation
+There are many reasons to use the BLOGNADO API. The most common use case is to access blogs and comments for use in some Single Page Applications
 
-```bash
-$ npm install
+
+## Authorization
+
+Some API requests require the use of a generated API key. You can find your API key, or generate a new one, by navigating to the /signup endpoint or regenerate key with /login endpoint providing a valid email address and password.
+
+To authenticate an API request, you should provide your API key in the `Authorization` header.
+
+
+```http
+POST /comments
 ```
 
-## Running the app
+| Authorization Type|  Example |
+| :--- | :--- |
+| `Bearer` `token` | Bearer **Your token**|
 
-```bash
-# development
-$ npm run start
+## Responses
 
-# watch mode
-$ npm run start:dev
+Many API endpoints return the JSON representation of the resources created or edited. However, if an invalid request is submitted, or some other error occurs, Gophish returns a JSON response in the following format:
 
-# production mode
-$ npm run start:prod
+```javascript
+{
+  "message" : string,
+  "status" : int,
+  "data"    : string
+}
 ```
 
-## Test
+The `message` attribute contains a message commonly used to indicate errors or, in the case of creating or deleting a resource, success that the resource was properly deleted.
 
-```bash
-# unit tests
-$ npm run test
+The `success` attribute describes the status code of the response.
 
-# e2e tests
-$ npm run test:e2e
+The `data` attribute contains any other metadata associated with the response. This will be an escaped string containing JSON data.
 
-# test coverage
-$ npm run test:cov
+## Status Codes
+
+BLOGNADO returns the following status codes in its API:
+
+| Status Code | Description |
+| :--- | :--- |
+| 200 | `OK` |
+| 201 | `CREATED` |
+| 400 | `BAD REQUEST` |
+| 401 | `UNAUTHORIZED` |
+| 404 | `NOT FOUND` |
+| 500 | `INTERNAL SERVER ERROR` |
+
+
+
+
+## Endpoints
+
+### Get list of Blogs
+
+#### Request
+```http
+GET /blogs
 ```
 
-## Support
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `page` | `integer` | Page Number |
+| `limit` | `integer` | Number of Blogs |
+| `tag` | `string` | Filter's blogs my tags  |
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Response
 
-## Stay in touch
+```typescript
+{
+  "message" : "blogs fetched successfully",
+  "data"    : BlogType[] // Check the types below
+}
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+### Search Blogs 
 
-Nest is [MIT licensed](LICENSE).
+#### Request
+
+```http
+GET /blogs/search
+```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `page` | `integer` | Page Number |
+| `limit` | `integer` | Number of Blogs |
+| `tag` | `string` | Filter's blogs my tags  |
+| `searchKey` | `string` | **Required** search term|
+
+#### Response
+
+```typescript
+{
+  "message" : "blogs fetched successfully",
+  "data"    : BlogType[] // Check the types below
+}
+```
+
+### Create Blog
+
+#### Request
+```http
+POST /blogs
+```
+
+| Request Body | Type | Description |
+| :--- | :--- | :--- |
+| `title` | `string` | Blog Title |
+| `isAnonymous` | `bool` | Write blog as anonymous |
+| `tags` | `string[]` | List of tags  |
+
+#### Response
+
+```typescript
+{
+  "message" : "blog created successfully",
+  "data"    : BlogType // Check the types below
+}
+```
+### Create User
+
+#### Request
+```http
+POST /users
+```
+
+| Request Body | Type | Description |
+| :--- | :--- | :--- |
+| `firstName` | `string` | First Name |
+| `lastName` | `string` | Last Name |
+| `password` | `string` | **Required** Password |
+| `phone` | `string` | Phone Number |
+| `email` | `string` | **Required** Email Address |
+
+#### Response
+
+```typescript
+{
+  "message" : "blog created successfully",
+  "data"    : UserType // Check the types below
+}
+```
