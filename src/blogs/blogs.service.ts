@@ -189,4 +189,14 @@ export class BlogsService {
     }
   }
 
+  async fetchTags() {
+    try {
+      const tags = await this.blogModel.distinct("$tags")
+      return { message: "tags fetched successfully", data: tags}
+    }catch (error) {
+      this.logger.error(error)
+      throw new HttpException(error, 500)
+    }
+  }
+
 }

@@ -51,4 +51,9 @@ export class BlogsController {
     async likeBlog(@Param("blog_id") blogId: string) {
         return this.blogService.likeBlog(blogId)
     }
+
+    @Get("/tags")
+    async fetchTags() {
+        return this.blogService.fetchTags()
+    }
 }
