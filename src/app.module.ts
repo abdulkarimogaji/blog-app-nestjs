@@ -8,14 +8,12 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { BlogsModule } from "./blogs/blogs.module";
 import { CommentsModule } from "./comments/comments.module";
 import { JwtModule } from "@nestjs/jwt";
-import { User, UserSchema } from "./users/schemas/user.schema";
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true, ignoreEnvVars: false }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forRoot(new ConfigService().get("DB_CONNECTION_URI")),
     BlogsModule,
     CommentsModule,
