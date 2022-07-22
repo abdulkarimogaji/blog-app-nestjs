@@ -6,7 +6,7 @@ import { User, UserSchema } from "src/users/schemas/user.schema";
 import { UserModule } from "src/users/users.module";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { jwtConstants } from "./jwt.constants";
+import { GoogleStrategy } from "./google.strategy";
 import { JwtStrategy } from "./jwt.strategy";
 import { LocalStrategy } from "./local.strategy";
 
@@ -15,9 +15,9 @@ import { LocalStrategy } from "./local.strategy";
     UserModule,
     PassportModule,
     JwtModule,
-    MongooseModule.forFeature([{name: User.name, schema: UserSchema}])
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
