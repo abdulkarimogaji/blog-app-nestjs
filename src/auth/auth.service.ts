@@ -50,8 +50,8 @@ export class AuthService {
     try {
       // get user info from credentials
       const client = new OAuth2Client(cred.clientId);
-      const userInfo: any = await client.verifyIdToken({
-        idToken: cred.credentials,
+      const { payload: userInfo }: any = await client.verifyIdToken({
+        idToken: cred.credential,
         audience: cred.clientId,
       });
       const fetchedUser = await this.userModel.findOne({
