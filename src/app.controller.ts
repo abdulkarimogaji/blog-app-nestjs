@@ -10,14 +10,4 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
-
-  @Get("google")
-  @UseGuards(AuthGuard("google"))
-  async googleAuth(@Req() req) {}
-
-  @Get("google/redirect")
-  @UseGuards(AuthGuard("google"))
-  googleAuthRedirect(@Req() req) {
-    return this.appService.googleLogin(req);
-  }
 }
