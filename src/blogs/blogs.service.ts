@@ -241,4 +241,23 @@ export class BlogsService {
       throw new HttpException(error, 500);
     }
   }
+
+  async getBlogBySlug(slug: string) {
+    try {
+      const blog = await this.blogModel.aggregate([
+        { $match: { $expr: { $eq: ["$slug", slug] } } },
+        ...lookupAuthorAndComments,
+      ]);
+      if (blog[0] == undefined) {
+        throw new NotFoundException();
+      }
+      return { message: "blog fetched successfully", data: blog[0] };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      this.logger.error(error);
+      throw new HttpException(error, 500);
+    }
+  }
 }
