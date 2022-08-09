@@ -242,10 +242,19 @@ export class BlogsService {
     }
   }
 
-  async getBlogBySlug(slug: string) {
+  async getBlogBySlugOrId(slugOrId: string) {
     try {
       const blog = await this.blogModel.aggregate([
-        { $match: { $expr: { $eq: ["$slug", slug] } } },
+        {
+          $match: {
+            $expr: {
+              $or: [
+                { $eq: ["$slug", slugOrId] },
+                { $eq: [{ $toString: "$_id" }, slugOrId] },
+              ],
+            },
+          },
+        },
         ...lookupAuthorAndComments,
       ]);
       if (blog[0] == undefined) {

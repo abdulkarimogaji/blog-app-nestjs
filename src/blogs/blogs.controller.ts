@@ -41,7 +41,7 @@ export class BlogsController {
 
   @Get(":slug")
   async getBlogById(@Param("slug") slug: string) {
-    return this.blogService.getBlogBySlug(slug);
+    return this.blogService.getBlogBySlugOrId(slug);
   }
 
   @Get("user/:user_id")
